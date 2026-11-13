@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>测一测，你的心动雷达准不准</title>
+<style>
+  :root{
+    --acc:#e0336e; --acc2:#f27a9b; --gold:#b06a2c;
+    --bg1:#fff5f8; --bg2:#fbdfea;
+    --ink:#4a1029; --sub:#a8768a; --card:#ffffff; --line:#f6c9d8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);
+    background:linear-gradient(160deg,var(--bg1),var(--bg2));min-height:100vh}
+  .wrap{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:18px 18px 28px}
+
+  /* ---------- 首页 ---------- */
+  .hero{text-align:center;padding:26px 8px 18px}
+  .hero .emoji{font-size:54px;line-height:1}
+  .hero h1{font-size:25px;line-height:1.45;margin:14px 4px 8px;font-weight:800}
+  .hero h1 .hl{color:var(--acc)}
+  .hero .sub{font-size:14px;color:var(--sub);margin-bottom:18px;line-height:1.7}
+  .tags{display:flex;flex-direction:column;gap:9px;margin:6px 4px 20px}
+  .tag{background:var(--card);border-radius:14px;padding:12px 14px;font-size:14px;text-align:left;
+    box-shadow:0 2px 10px rgba(224,51,110,.10);border:1px solid var(--line)}
+  .tag b{color:var(--acc)}
+  .btn{display:block;width:100%;padding:16px;border:none;border-radius:999px;font-size:18px;font-weight:700;
+    color:#fff;background:linear-gradient(90deg,var(--acc),var(--acc2));cursor:pointer;
+    box-shadow:0 6px 18px rgba(224,51,110,.30);letter-spacing:2px}
+  .btn:active{transform:scale(.97)}
+  .footnote{text-align:center;font-size:12px;color:#c99dac;margin-top:14px;line-height:1.7}
+  .deco{margin-top:22px;font-size:13px;color:#d9a8bc;text-align:center;line-height:1.9}
+
+  /* ---------- 答题 ---------- */
+  .bar{height:8px;background:#f6cfdd;border-radius:99px;overflow:hidden;margin:10px 0 6px}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:99px;transition:width .3s}
+  .count{text-align:right;font-size:12px;color:var(--sub);margin-bottom:10px}
+  .q{background:var(--card);border-radius:18px;padding:20px 16px;font-size:17px;font-weight:700;line-height:1.6;
+    box-shadow:0 4px 14px rgba(224,51,110,.12);margin-bottom:16px}
+  .q .num{display:inline-block;font-size:12px;font-weight:600;color:#fff;background:var(--acc2);
+    border-radius:99px;padding:3px 10px;margin-bottom:10px}
+  .opts{display:flex;flex-direction:column;gap:11px}
+  .opt{background:var(--card);border:1.5px solid var(--line);border-radius:15px;padding:14px 15px;font-size:15px;
+    line-height:1.55;text-align:left;cursor:pointer;transition:.15s;color:var(--ink)}
+  .opt:active{background:var(--bg1);border-color:var(--acc);transform:scale(.98)}
+
+  /* ---------- 结果 ---------- */
+  .result{text-align:center;padding-top:22px}
+  .result .emoji{font-size:56px}
+  .result .name{font-size:24px;font-weight:800;color:var(--acc);margin-top:10px}
+  .result .tagline{font-size:15px;color:var(--gold);margin-top:6px;font-weight:700}
+  .card{background:var(--card);border-radius:18px;padding:18px 16px;text-align:left;margin-top:16px;
+    box-shadow:0 4px 14px rgba(224,51,110,.12);font-size:14px;line-height:1.85}
+  .card h3{font-size:13px;color:var(--acc);margin-bottom:8px;letter-spacing:1px}
+  .card.fix{border-left:4px solid var(--gold)}
+  .card.fix h3{color:var(--gold)}
+  .stat{font-size:12px;color:var(--sub);margin-top:14px;line-height:1.7}
+  .share{margin-top:16px;padding:14px;border:none;border-radius:999px;font-size:15px;font-weight:700;
+    color:var(--acc);background:#fff;border:1.5px solid var(--acc);cursor:pointer;width:100%}
+  .again{margin-top:10px}
+  .hidden{display:none}
+  @keyframes pop{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+  .pop{animation:pop .35s ease}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 首页 -->
+  <section id="home">
+    <div class="hero">
+      <div class="emoji">📡</div>
+      <h1>测一测，你的<br><span class="hl">心动雷达</span>准不准</h1>
+      <div class="sub">秒回、已读、点赞、忽冷忽热——<br>你的接收器到底读出了什么</div>
+    </div>
+    <div class="tags">
+      <div class="tag">✅ <b>信号识别</b>｜那些行为到底算不算心动</div>
+      <div class="tag">✅ <b>误报排查</b>｜你把多少客气读成了喜欢</div>
+      <div class="tag">✅ <b>雷达体质</b>｜十种接收器对号入座</div>
+      <div class="tag">✅ <b>校准建议</b>｜下次别再猜错</div>
+    </div>
+    <button class="btn" onclick="start()">点击测试 →</button>
+    <div class="footnote">趣味测试仅供娱乐，不构成任何情感建议</div>
+    <div class="deco">32 道心动场景题 · 10 种雷达体质 · 约 3 分钟<br>答完记得回评论区报体质 👀</div>
+  </section>
+
+  <!-- 答题 -->
+  <section id="quiz" class="hidden">
+    <div class="bar"><i id="pbar"></i></div>
+    <div class="count"><span id="cnow">1</span> / 32</div>
+    <div class="q"><span class="num" id="qnum"></span><br><span id="qtext"></span></div>
+    <div class="opts" id="opts"></div>
+  </section>
+
+  <!-- 结果 -->
+  <section id="res" class="hidden">
+    <div class="result">
+      <div class="emoji pop" id="remoji">📡</div>
+      <div class="name pop" id="rname"></div>
+      <div class="tagline pop" id="rtag"></div>
+      <div class="card"><h3>📡 雷达档案</h3><div id="rbody"></div></div>
+      <div class="card fix"><h3>🛠 校准建议（下次这么用）</h3><div id="rstep"></div></div>
+      <div class="card"><h3>⚠️ 你的雷达最容易翻车的地方</h3><div id="rwarn"></div></div>
+      <div class="stat" id="rstat"></div>
+      <button class="share" onclick="copyRes()">📋 复制体质，去评论区对答案</button>
+      <button class="share again" onclick="location.reload()">🔄 再测一次（换个心情？）</button>
+      <div class="footnote">趣味测试仅供娱乐，不构成任何情感建议</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const TYPES = {
+ A:{e:"🎯",n:"雷达校准型",t:"几乎不误报，也不漏报",
+    b:"你读人像读说明书：谁对你有意思、谁只是客套，扫一眼聊天记录就能标出把握有多大。别人为暧昧失眠，你为暧昧做笔记。你的雷达出厂就校准过，而且你舍得相信自己。",
+    s:"把最近三个月让你犹豫过的人列出来，写下你当时的判断和后来的结果——准确率高到值得赌一把的话，下次就别犹豫那么久。",
+    w:"准的人最大的坑是无聊：一眼看到底，就很少让别人真正走近。偶尔装一次看不懂，感情不是考卷，不用每题都答对。"},
+ B:{e:"🐢",n:"信号盲区型",t:"别人追到门口，你才想起来开门",
+    b:"你不是没收到信号，是信号到你这儿自动降权。秒回、刻意路过、句句有回应，你统统归类为「TA对谁都这样」。等你后知后觉，人家已经礼貌退场了。你的雷达不是坏，是音量被调到了最低。",
+    s:"找一个最近对你格外好的人，把TA做过的事列十条，逐条问自己「对别人也这样吗」——你会吓一跳。",
+    w:"后知后觉不可怕，可怕的是拿「我根本没看出来」当万能解释。同一个坑错过两次以上，就别再说是巧合了。"},
+ C:{e:"🎬",n:"脑补导演型",t:"TA只是礼貌，你已经拍完了整部剧",
+    b:"你的雷达不是接收器，是放映机。对方一句「早」，你脑补出三集剧情；一个点赞，你排好了约会路线。想象力一流，但把「可能」直接当「确定」，误报率高得离谱——好在每一次都真诚。",
+    s:"下次心动时先找反例：TA有没有对别人也这样？一条反例，能救你三个月。找不到反例再往前走一步。",
+    w:"脑补不可耻，可耻的是拿脑补去对质。证据还只有一个点赞的时候，别表白、别质问、别摊牌。"},
+ D:{e:"🧊",n:"单向屏蔽型",t:"谁真心喜欢你，你恰好看不见",
+    b:"你的雷达有个奇怪的盲区：虚情假意看得明明白白，真心实意反而自动忽略。越是认真对你的人，你越怀疑「图什么」。这不是迟钝，是一种自我保护——只是保护久了，好人也进不来。",
+    s:"想想那个「对你好得有点奇怪」的人，先别急着解释动机，回应一次试试：约一顿饭，什么都不用决定。",
+    w:"把所有真心都先怀疑一遍，最后剩下的往往是不真心的。给确定的事开一个通道，你的雷达才算完整。"},
+ E:{e:"🌡️",n:"直觉天成型",t:"说不出理由，但从来没错过",
+    b:"你讲不出TA哪句话露了馅，但你就是知道。朋友找你要证据，你说没有，只有感觉——而结果总是你赢。你的雷达不走分析这条路，走的是「汇总」：所有细节你早就无意识处理完了。",
+    s:"你的感觉值得记录：每次判断写一句话存着，半年后翻出来对一对，你会开始真正信任自己。",
+    w:"直觉怕疲惫。状态差、想太多、被人劝的时候，你的雷达会失灵——那种时候别下判断，先睡觉。"},
+ F:{e:"🔍",n:"证据搜查型",t:"聊天记录查了三遍，结论还是错的",
+    b:"你像办案：时间线、回复间隔、表情包频率，全部建档分析。可人心不是证据链——TA深夜找你，可能只是失眠。你收集了一堆正确的细节，却拼出一个错误的结论，因为你只采信搜得到的。",
+    s:"下次别翻记录了，直接观察现实：TA愿不愿意为你花时间。时间是唯一伪造不了的证据。",
+    w:"查案式恋爱最累的是对方。TA会感觉自己一直在被审，而真正的信号，早在你的质询里变凉了。"},
+ G:{e:"🪞",n:"投射混淆型",t:"分不清是TA心动，还是你心动",
+    b:"你的雷达有个致命bug：自己的心动会伪装成对方的信号。TA只是正常说话，你却读出了万有引力。你感知力其实很强，只是接收器里混进了自己的心跳——分不清来源，是你唯一的误差。",
+    s:"心动时先问自己：如果我不喜欢TA，TA刚才那个行为还特别吗？答案会立刻清晰。",
+    w:"先分清自己，再判断别人。你的雷达不缺灵敏度，缺一个「暂时关掉自己」的开关。"},
+ H:{e:"⏳",n:"慢热校验型",t:"当时全错，三个月后回头看全对",
+    b:"你的判断需要时间发酵。当场问你的意见，你总是错；过了三个月回头再问，句句都准。你其实早就看清了，只是不敢当场下结论——你信的是趋势，不是瞬间。",
+    s:"别逼自己当场表态。给每段暧昧三个月的观察期，到期强制复盘一次，你的准确率会翻倍。",
+    w:"慢有慢的代价：有人等不了三个月。对等得起的人，你的慢叫准；对等不起的人，你的慢就是拒绝。"},
+ I:{e:"📣",n:"主动确认型",t:"雷达不准没关系，我直接问",
+    b:"你是十种人里唯一不靠雷达的：看不懂就问，猜不透就试探，被拒绝就笑笑翻篇。你的「准」不是测出来的，是问出来的。效率极高，只是偶尔在别人还没想好的时候，把人吓退了。",
+    s:"保留你的杀手锏，但加一个等待期：重要的问题问出口后，给对方两周，别追问第二次。",
+    w:"直接是天赋，但有些人需要被读懂，而不是被提问。问三次都没答案，就别问第四次了。"},
+ J:{e:"📻",n:"单频段型",t:"只对一种人准，其他人全是雪花",
+    b:"你的雷达只调谐一个频段：可能是某种性格、某种气质，甚至只是某种说话方式。落在频段里的人，你准得吓人；频段外的，满屏雪花。你不是不准，是覆盖面太窄——好在爱情从不需要广域搜索。",
+    s:"写下那个你「一眼就懂」的人的共同点，那就是你的频段。以后照着频段找人，别在雪花里瞎调台。",
+    w:"单一频段最大的坑，是把「对不上」当成「不合适」。有些人，值得你手动调一次台。"}
+};
+
+const QS = [
+ ["微信弹出「在吗」，你心里会咯噔一下吗：",
+  ["分人——有的人一出现我就懂，有的人我完全读不出","J"],
+  ["不咯噔，我根本不往那边想","B"],
+  ["咯噔，开始分析TA为什么找我","C"],
+  ["说不上来，就是觉得时机有点不对","E"]],
+ ["朋友说「TA肯定喜欢你」，你会：",
+  ["先看TA是哪类人，我的雷达只对某类人灵","J"],
+  ["笑而不语，其实心里早有数","A"],
+  ["心里咯噔一下，果然是这样","E"],
+  ["「有吗？也可能是我压根没敢往那想」","G"]],
+ ["对方总是秒回你消息，你的解读是：",
+  ["先看是谁，我只对某类人的秒回上心","J"],
+  ["现代人对手机都这样，不代表什么","B"],
+  ["TA是不是攥着手机在等我","C"],
+  ["我不解读，直接约TA，看答应多快","I"]],
+ ["你判断「TA喜欢我」的最大依据：",
+  ["TA愿意为我花多少时间","F"],
+  ["一种说不清的感觉","E"],
+  ["TA对我和对别人不一样的地方","A"],
+  ["TA偶然说过的某句话","C"]],
+ ["面对一段暧昧，你的方式更接近：",
+  ["边处边判断，行动比分析快","I"],
+  ["先放三个月，看趋势","H"],
+  ["事事留痕，回头复盘","F"],
+  ["其实我在先弄清自己是不是真喜欢","G"]],
+ ["聚会上有个异性一直跟你聊，你会：",
+  ["聊得来就聊，慢慢看","H"],
+  ["注意到了，但分不清是TA刻意还是我在意","G"],
+  ["心想TA是不是对我有意思","C"],
+  ["观察TA对别人是不是也这样","F"]],
+ ["被人暗恋过的经历，你有吗：",
+  ["好几次，都是后来才听说","B"],
+  ["可能有，但被我错过了，没发现","D"],
+  ["有，而且我早就猜到了","A"],
+  ["有，想起就后怕，差点错过","H"]],
+ ["别人突然夸你，你的第一反应：",
+  ["是不是有事要我帮忙","D"],
+  ["说声谢谢，然后忘掉","B"],
+  ["看是谁夸的——有的人夸我，我一下就懂","J"],
+  ["有点心虚，怕又是我在自作多情","G"]],
+ ["你暗恋一个人的时候：",
+  ["对方一个细节，我能写三千字","C"],
+  ["总在怀疑「我到底喜欢TA什么」","G"],
+  ["按计划推进接触，一步步来","I"],
+  ["身边人都看出来了，就TA不知道","B"]],
+ ["对方已读不回，你的脑内剧场是：",
+  ["TA大概只是在忙吧，没什么特别的","D"],
+  ["不等解读，隔天直接问","I"],
+  ["翻聊天记录找线索","F"],
+  ["一边生气一边怕是自己误会","G"]],
+ ["四种判断里，你更相信哪个：",
+  ["第一感觉","E"],
+  ["反复核实后的结论","F"],
+  ["时间，久了自然清楚","H"],
+  ["行动带来的反馈","I"]],
+ ["收到一份没留名的礼物，你会：",
+  ["先想是不是我记错了，可能根本没人送","D"],
+  ["直接问问是谁送的","I"],
+  ["心里其实已经有答案","E"],
+  ["脑中过了一遍所有可能","C"]],
+ ["关于聊天记录，你属于哪种：",
+  ["干净，聊完就翻篇","B"],
+  ["会翻旧的，找态度变化的节点","F"],
+  ["存着TA说过的那些「金句」","C"],
+  ["不翻，有疑问直接问本人","I"]],
+ ["朋友陷入暧昧来问你，你会：",
+  ["跟着感觉说，往往很准","E"],
+  ["帮着一起分析，越分析越乱","F"],
+  ["劝TA直接问","I"],
+  ["劝TA再等等看","H"]],
+ ["「全桌人都看出来了，就当事人不知道」——你是：",
+  ["我就是那个当事人","B"],
+  ["我是全桌人之一","A"],
+  ["我是那个暧昧对象，我也没看懂","D"],
+  ["我是后来复盘才发现的","H"]],
+ ["前任还留着你的微信，你觉得：",
+  ["压根没注意TA还留着我微信","D"],
+  ["有点在意，会想TA是不是没放下","C"],
+  ["说不清，但心里有数","E"],
+  ["我一般直接问清楚","I"]],
+ ["群聊里TA总是接你的话：",
+  ["没往心里去","D"],
+  ["没感觉，TA对谁都这样吧","B"],
+  ["看是谁——有的人接我话，我一下就懂","J"],
+  ["有点开心，先不想为什么","G"]],
+ ["你怎么判断一个人是不是讨厌你：",
+  ["一眼就知道，讨厌藏不住","A"],
+  ["看回复的速度和长度","F"],
+  ["我常常把喜欢误判成讨厌","D"],
+  ["接触多了自然知道","H"]],
+ ["你心动史上最大的一次失误：",
+  ["把客气当成了心动","C"],
+  ["把心动当成了客气","B"],
+  ["分析太多，把人吓跑了","F"],
+  ["犹豫太久，错过了","H"]],
+ ["打赌「TA是不是单身」，你会：",
+  ["看一眼动态就敢下注","A"],
+  ["不赌，直接问","I"],
+  ["下注前先想：会不会是我想多了","G"],
+  ["凭一种说不出的气场","E"]],
+ ["有人夸你「直觉很准」，你会说：",
+  ["是，基本没错过","E"],
+  ["有时分不清，是TA心动还是我在期待","G"],
+  ["不准，别人的真心我反而看不见","D"],
+  ["只对特定的人准，其他不行","J"]],
+ ["认识新的人，你最留意：",
+  ["聊天是否同频","J"],
+  ["细节：TA怎么对服务员","A"],
+  ["相处起来我舒不舒服","E"],
+  ["条件逐条比对","F"]],
+ ["对方说「还是做朋友吧」，你会：",
+  ["朋友就朋友，转身就走","I"],
+  ["其实早有感觉，不意外","E"],
+  ["复盘到底哪一步错了","F"],
+  ["需要一段时间缓一缓","H"]],
+ ["你会主动试探吗：",
+  ["经常，扔个球看TA接不接","I"],
+  ["对有的人我不用试探，一眼就懂","J"],
+  ["试探完要复盘很久","F"],
+  ["从不，怕自己误会了自作多情","G"]],
+ ["朋友对你表白，你的第一反应：",
+  ["早就感觉到了，就等TA开口","A"],
+  ["完全没想到，大脑一片空白","B"],
+  ["想了半天，居然想不起TA做过什么特别的事","D"],
+  ["第一时间想的是我自己是什么感觉","G"]],
+ ["你更喜欢哪种开始方式：",
+  ["顺其自然，慢慢升温","H"],
+  ["说开就开，别让人猜谜","I"],
+  ["从志同道合的共同爱好开始","J"],
+  ["从一个说不清的心动瞬间开始","C"]],
+ ["别人突然对你特别好，你会：",
+  ["先记着，看看是不是常态","H"],
+  ["立刻警觉：TA是不是图什么","D"],
+  ["开始分析TA为什么突然对我好","F"],
+  ["开心，但怀疑是自己自作多情","G"]],
+ ["你觉得自己读人的水平：",
+  ["很准，所以我朋友不多但都是精挑的","A"],
+  ["对别人的心意特别迟钝，全靠别人点醒","D"],
+  ["看人：某类人我特别懂，其他抓瞎","J"],
+  ["不敢下结论，总觉得还得多看看","H"]],
+ ["朋友让你评价TA的暧昧对象，你：",
+  ["判断一般都应验","A"],
+  ["分析得头头是道，但常和结局相反","F"],
+  ["说的是感觉，往往被当事人后来验证","E"],
+  ["劝TA慢慢看，时间会给答案","H"]],
+ ["「TA今天对我特别好」，你的解读：",
+  ["肯定有事要宣布，或者有求于人","A"],
+  ["人总有心情好的时候，没多想","B"],
+  ["开始琢磨是不是对我有意思","C"],
+  ["先想TA最近经历了什么","E"]],
+ ["暧昧期最让你上头的是：",
+  ["TA的忽冷忽热，每次都让我猜半天","C"],
+  ["一起做事时的默契","J"],
+  ["一切按计划推进，确认感很足","I"],
+  ["那种「快了」的直觉","E"]],
+ ["用一个词形容你的心动雷达：",
+  ["精准","A"],
+  ["迟钝","B"],
+  ["发散","C"],
+  ["挑人","J"]]
+];
+
+let idx = 0, score = {};
+const $ = id => document.getElementById(id);
+
+function start(){
+  idx = 0; score = {};
+  $("home").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  render();
+}
+function render(){
+  const q = QS[idx];
+  $("qnum").textContent = "第 " + (idx+1) + " 题";
+  $("qtext").textContent = q[0];
+  $("cnow").textContent = idx+1;
+  $("pbar").style.width = (idx/32*100) + "%";
+  const box = $("opts"); box.innerHTML = "";
+  q.slice(1).forEach(([text,key])=>{
+    const b = document.createElement("button");
+    b.className = "opt"; b.textContent = text;
+    b.onclick = ()=>pick(key);
+    box.appendChild(b);
+  });
+  window.scrollTo(0,0);
+}
+function pick(key){
+  score[key] = (score[key]||0) + 1;
+  idx++;
+  if(idx < QS.length) render(); else show();
+}
+function show(){
+  $("quiz").classList.add("hidden");
+  $("res").classList.remove("hidden");
+  const order = ["A","B","C","D","E","F","G","H","I","J"];
+  let best = order[0];
+  order.forEach(k=>{ if((score[k]||0) > (score[best]||0)) best = k; });
+  const t = TYPES[best];
+  $("remoji").textContent = t.e;
+  $("rname").textContent = t.n;
+  $("rtag").textContent = "—— " + t.t + " ——";
+  $("rbody").textContent = t.b;
+  $("rstep").textContent = t.s;
+  $("rwarn").textContent = t.w;
+  const sorted = order.map(k=>[k,score[k]||0]).sort((a,b)=>b[1]-a[1]);
+  const second = TYPES[sorted[1][0]];
+  $("rstat").textContent = "次高体质：" + second.n + "（" + second.t + "）· 32 题答完，" + (score[best]||0) + " 题指向这个体质。雷达没有绝对的好坏，准的人输在不敢，钝的人赢在不内耗。";
+  $("res").dataset.text = "我在「测一测，你的心动雷达准不准」里测出了【" + t.n + "】："
+    + t.t + "。" + t.s + " 来测测你的雷达 →";
+  window.scrollTo(0,0);
+}
+function copyRes(){
+  const text = $("res").dataset.text;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>alert("已复制，去评论区报体质吧 👀"));
+  }else{
+    const ta = document.createElement("textarea");
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); document.body.removeChild(ta);
+    alert("已复制，去评论区报体质吧 👀");
+  }
+}
+</script>
+</body>
+</html>
